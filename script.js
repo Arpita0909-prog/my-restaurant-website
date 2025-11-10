@@ -1,53 +1,110 @@
-let orders = JSON.parse(localStorage.getItem('orders')) || [];
+// API URL for CRUD operations
+const apiUrl ="https://crudcrud.com/api/727ed89450894ea8ab0de2e2b620d55a";
+                              
 
-document.getElementById('order-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const tableNumber = document.getElementById('table-number').value;
-  const dish = document.getElementById('dish').value;
-  const price = document.getElementById('price').value;
-  const order = { tableNumber, dish, price };
-  createOrder(order);
-  displayOrders();
-  document.getElementById('order-form').reset();
+                              
+const orderForm = document.getElementById('//your-backend-api.com/orders';
+
+// Get form and table elements
+const orderForm = document.getElementById('order-form');
+const orderTableBody = document.getElementById('order-table-body');
+
+                                    
+orderForm.addEventListener('// Add event listener to form submit
+orderForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const tableNumber = document.getElementById('table-number').value;
+    const dish = document.getElementById('dish').value;
+    const price = document.getElementById('price').value;
+    const order = { tableNumber, dish, price };
+    createOrder(order);
 });
 
+                     
 function createOrder(order) {
-  orders.push(order);
-  localStorage.setItem('orders', JSON.stringify(orders));
+    axios.post(apiUrl, order)
+        .then((response) => {
+            console.log(response.data);
+            displayOrders();
+            orderForm.reset();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
+                     
 function displayOrders() {
-  const orderTableBody = document.getElementById('order-table-body');
-  orderTableBody.innerHTML = '';
-  orders.forEach((order, index) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${order.tableNumber}</td>
-      <td>${order.dish}</td>
-      <td>${order.price}</td>
-      <td>
-        <button onclick="updateOrder(${index})">Update</button>
-        <button onclick="deleteOrder(${index})">Delete</button>
-      </td>
-    `;
-    orderTableBody.appendChild(row);
-  });
+    axios.get(apiUrl)
+        .then((response) => {
+            const orders = response.data;
+            orderTableBody.innerHTML = '// Create a new order
+function createOrder(order) {
+    axios.post(apiUrl, order)
+        .then((response) => {
+            console.log(response.data);
+            displayOrders();
+            orderForm.reset();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
-function updateOrder(index) {
-  const order = orders[index];
-  const newTableNumber = prompt('Enter new table number:', order.tableNumber);
-  const newDish = prompt('Enter new dish:', order.dish);
-  const newPrice = prompt('Enter new price:', order.price);
-  orders[index] = { tableNumber: newTableNumber, dish: newDish, price: newPrice };
-  localStorage.setItem('orders', JSON.stringify(orders));
-  displayOrders();
+// Display all orders
+function displayOrders() {
+    axios.get(apiUrl)
+        .then((response) => {
+            const orders = response.data;
+            orderTableBody.innerHTML = '';
+            orders.forEach((order) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.tableNumber}</td>
+                    <td>${order.dish}</td>
+                    <td>${order.price}</td>
+                    <td>
+                        <button onclick="updateOrder(${order.id})">Update</button>
+                        <button onclick="deleteOrder(${order.id})">Delete</button>
+                    </td>
+                `;
+                orderTableBody.appendChild(row);
+            });
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
-function deleteOrder(index) {
-  orders.splice(index, 1);
-  localStorage.setItem('orders', JSON.stringify(orders));
-  displayOrders();
+                           
+function updateOrder(id) {
+    const newTableNumber = prompt('// Update an existing order
+function updateOrder(id) {
+    const newTableNumber = prompt('Enter new table number:');
+    const newDish = prompt('Enter new dish:');
+    const newPrice = prompt('Enter new price:');
+    const updatedOrder = { tableNumber: newTableNumber, dish: newDish, price: newPrice };
+    axios.put(`${apiUrl}/${id}`, updatedOrder)
+        .then((response) => {
+            console.log(response.data);
+            displayOrders();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
+// Delete an existing order
+function deleteOrder(id) {
+    axios.delete(`${apiUrl}/${id}`)
+        .then((response) => {
+            console.log(response.data);
+            displayOrders();
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
+// Initial display of orders
 displayOrders();
